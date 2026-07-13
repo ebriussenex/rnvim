@@ -32,7 +32,7 @@ local schemes = {
             vim.g.moonflyVirtualTextColor = true
         end,
     },
-    { -- TODO: comments still italic
+    {
         src = 'killitar/obscure.nvim',
         module = 'obscure',
         colorscheme = 'obscure',
@@ -51,7 +51,7 @@ local schemes = {
             },
         },
     },
-    { -- TODO: comments still italic
+    {
         src = 'wtfox/jellybeans.nvim',
         module = 'jellybeans',
         colorscheme = 'jellybeans',
@@ -62,7 +62,7 @@ local schemes = {
             },
         },
     },
-    { -- all italic
+    {
         src = 'datsfilipe/vesper.nvim',
         module = 'vesper',
         colorscheme = 'vesper',
@@ -76,7 +76,7 @@ local schemes = {
             },
         },
     },
-    {
+    { -- TODO: neotree not transparent
         src = 'thesimonho/kanagawa-paper.nvim',
         module = 'kanagawa-paper',
         colorscheme = 'kanagawa-paper-ink',
