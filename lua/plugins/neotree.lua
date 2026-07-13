@@ -5,7 +5,7 @@ function M.setup()
         return 'https://github.com/' .. repo
     end
 
-    require('plugins.editor.icons').setup()
+    require('plugins.icons').setup()
     vim.pack.add {
         { src = gh 'nvim-lua/plenary.nvim' },
         { src = gh 'MunifTanjim/nui.nvim' },

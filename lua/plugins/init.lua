@@ -1,4 +1,12 @@
-require 'plugins.lsp'
-require 'plugins.format'
-require 'plugins.editor'
+-- parse --> autocmp --> lsp --> other
 require('plugins.treesitter').setup()
+require('plugins.blink').setup()
+require 'plugins.lsp'
+require('plugins.conform').setup()
+
+require('plugins.icons').setup()
+require('plugins.telescope').setup()
+require('plugins.neotree').setup()
+
+-- require('plugins.colorscheme').setup()
+require('plugins.whichkey').setup()
