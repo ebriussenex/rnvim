@@ -10,8 +10,9 @@ function M.setup()
 
     require('which-key').add {
         { '<leader>s', group = '[s]earch' },
-        { '<leader>b', group = '[B]uffer' },
-        { '<leader>t', group = '[T]oggle' },
+        { '<leader>b', group = '[b]uffer' },
+        { '<leader>t', group = '[t]oggle' },
+        { '<leader>u', group = '[U]I' },
     }
 end
 

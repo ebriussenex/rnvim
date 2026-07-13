@@ -1,14 +1,8 @@
 local M = {}
 
 function M.setup()
-    local gh = function(repo)
-        return 'https://github.com/' .. repo
-    end
-
     vim.pack.add {
-        { src = gh 'saghen/blink.cmp', version = vim.version.range '^1' },
-        { src = gh 'L3MON4D3/LuaSnip' },
-        { src = gh 'rafamadriz/friendly-snippets' },
+        { src = 'https://github.com/saghen/blink.cmp', version = vim.version.range '^1' },
     }
 
     require('luasnip.loaders.from_vscode').lazy_load()
