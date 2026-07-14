@@ -17,6 +17,7 @@ require('plugins.whichkey').setup()
 require('plugins.snacks').setup()
 require('plugins.gitsigns').setup()
 require('plugins.diffview').setup()
+require('plugins.heirline').setup() -- after gitsigns
 
 -- no order
 require('plugins.autopairs').setup()
