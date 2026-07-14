@@ -16,6 +16,7 @@ require('plugins.colorscheme').setup()
 require('plugins.whichkey').setup()
 require('plugins.snacks').setup()
 require('plugins.gitsigns').setup()
+require('plugins.diffview').setup()
 
 -- no order
 require('plugins.autopairs').setup()

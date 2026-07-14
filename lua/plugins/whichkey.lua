@@ -11,7 +11,7 @@ function M.setup()
     require('which-key').add {
         { '<leader>s', group = '[s]earch' },
         { '<leader>b', group = '[b]uffer' },
-        { '<leader>t', group = '[t]oggle' },
+        { '<leader>t', group = '[t]oggle/[t]erminal' },
         { '<leader>u', group = '[U]I' },
         { '<leader>d', group = '[d]ebug' },
         { '<leader>h', group = 'git [h]unk' },

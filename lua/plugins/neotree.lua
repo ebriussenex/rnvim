@@ -30,6 +30,14 @@ function M.setup()
                 ['\\'] = 'close_window',
             },
         },
+        event_handlers = {
+            {
+                event = 'neo_tree_popup_input_ready',
+                handler = function(args)
+                    vim.keymap.set('i', '<esc>', vim.cmd.stopinsert, { noremap = true, buffer = args.bufnr })
+                end,
+            },
+        },
     }
 
     vim.keymap.set('n', '<leader>\\', '<cmd>Neotree toggle<cr>', { desc = '[neotree] toggle' })

@@ -47,8 +47,6 @@ map('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'open diagnostic [q]ui
 
 -- terminal
 map('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'exit terminal mode' })
-map('n', '<leader>tt', '<cmd>split | term<cr>', { desc = '[t]erminal horizontal' })
-map('n', '<leader>tv', '<cmd>vsplit | term<cr>', { desc = '[t]erminal [v]ertical' })
 
 -- relative number
 map('n', '<leader>rr', function()
