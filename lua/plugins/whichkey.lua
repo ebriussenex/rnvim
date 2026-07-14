@@ -14,6 +14,7 @@ function M.setup()
         { '<leader>t', group = '[t]oggle' },
         { '<leader>u', group = '[U]I' },
         { '<leader>d', group = '[d]ebug' },
+        { '<leader>h', group = 'git [h]unk' },
     }
 end
 

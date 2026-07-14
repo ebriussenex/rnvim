@@ -13,6 +13,8 @@ require('plugins.neotree').setup()
 
 require('plugins.colorscheme').setup()
 require('plugins.whichkey').setup()
+require('plugins.snacks').setup()
+require('plugins.gitsigns').setup()
 
 -- no order
 require('plugins.autopairs').setup()
