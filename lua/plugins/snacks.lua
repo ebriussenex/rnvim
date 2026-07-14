@@ -76,6 +76,15 @@ snacks.gitbrowse = {
     end,
 }
 
+snacks.statuscolumn = {
+    cfg = {
+        enabled = true,
+        left = { 'mark', 'sign' },
+        right = { 'fold', 'git' },
+        folds = { open = true, git_hl = true },
+    },
+}
+
 snacks.bigfile = { cfg = { enabled = true } }
 snacks.quickfile = { cfg = { enabled = true } }
 
@@ -84,7 +93,6 @@ snacks.scroll = { cfg = { enabled = false } }
 snacks.picker = { cfg = { enabled = false } }
 snacks.explorer = { cfg = { enabled = false } }
 snacks.words = { cfg = { enabled = false } }
-snacks.statuscolumn = { cfg = { enabled = false } }
 snacks.dashboard = { cfg = { enabled = false } }
 snacks.scratch = { cfg = { enabled = false } }
 snacks.zen = { cfg = { enabled = false } }
