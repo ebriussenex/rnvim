@@ -8,9 +8,6 @@ local config = {
             workspace = {
                 preloadFileSize = 10000,
                 checkThirdParty = false,
-                library = {
-                    vim.env.VIMRUNTIME,
-                },
             },
         },
     },

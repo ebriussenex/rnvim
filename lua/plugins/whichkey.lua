@@ -13,6 +13,7 @@ function M.setup()
         { '<leader>b', group = '[b]uffer' },
         { '<leader>t', group = '[t]oggle' },
         { '<leader>u', group = '[U]I' },
+        { '<leader>d', group = '[d]ebug' },
     }
 end
 

@@ -5,6 +5,8 @@ require('plugins.blink').setup()
 require 'plugins.lsp'
 require('plugins.conform').setup()
 
+require('plugins.dap').setup()
+
 require('plugins.icons').setup()
 require('plugins.telescope').setup()
 require('plugins.neotree').setup()
