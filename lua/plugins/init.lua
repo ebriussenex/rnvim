@@ -9,6 +9,7 @@ require('plugins.conform').setup()
 require('plugins.dap').setup()
 
 require('plugins.telescope').setup()
+require('plugins.todo-comments').setup()
 require('plugins.neotree').setup()
 
 require('plugins.colorscheme').setup()
