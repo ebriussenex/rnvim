@@ -44,6 +44,8 @@ function M.setup()
             vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
         end,
     })
+
+    require('plugins.treesitter.textobjects').setup()
 end
 
 return M
