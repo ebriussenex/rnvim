@@ -17,7 +17,7 @@ local state = {
 -- https://github.com/nyoom-engineering/oxocarbon.nvim
 -- https://github.com/cseelus/vim-colors-lucid
 -- TODO: get those schemes and make all statements be bold >_<
--- all schemes must be with cfg.tansparent field or have cfg_apply with apply(transparent) (vimrc style) to work properly
+-- NOTE: all schemes must be with cfg.tansparent field or have cfg_apply with apply(transparent) (vimrc style) to work properly
 local schemes = {
     { -- do not transparent ?
         src = 'bluz71/vim-moonfly-colors',
