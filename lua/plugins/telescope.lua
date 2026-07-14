@@ -81,13 +81,6 @@ function M.setup()
     vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
     end, { desc = '[s]earch [n]eovim files' })
-
-    vim.keymap.set('n', 'gd', builtin.lsp_definitions, { desc = '[g]oto [d]efinition' })
-    vim.keymap.set('n', 'gr', builtin.lsp_references, { desc = '[g]oto [r]eferences' })
-    vim.keymap.set('n', 'gI', builtin.lsp_implementations, { desc = '[g]oto [i]mplementation' })
-    vim.keymap.set('n', '<leader>D', builtin.lsp_type_definitions, { desc = 'type [d]efinition' })
-    vim.keymap.set('n', '<leader>ds', builtin.lsp_document_symbols, { desc = '[d]ocument [s]ymbols' })
-    vim.keymap.set('n', '<leader>ws', builtin.lsp_dynamic_workspace_symbols, { desc = '[w]orkspace [s]ymbols' })
 end
 
 return M

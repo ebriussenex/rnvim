@@ -1,11 +1,5 @@
 local M = {}
 
-local map_lsp = function(event)
-    return function(keys, func, desc)
-        vim.keymap.set('n', keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
-    end
-end
-
 local hl_on_cursor = function(event, client)
     if client and client:supports_method 'textDocument/documentHighlight' then
         local highlight_augroup = vim.api.nvim_create_augroup('lsp-highlight', { clear = false })
@@ -31,11 +25,11 @@ local hl_on_cursor = function(event, client)
     end
 end
 
-local enable_inlay_hints = function(event, client)
-    if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-        map_lsp(event)('<leader>th', function()
-            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-        end, '[t]oggle Inlay [h]ints')
+local function enable_inlay_hints(event, client)
+    if client and client:supports_method 'textDocument/inlayHint' then
+        vim.keymap.set('n', '<leader>th', function()
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+        end, { buffer = event.buf, desc = '[T]oggle inlay [h]ints' })
     end
 end
 
@@ -44,6 +38,7 @@ function M.setup()
         group = vim.api.nvim_create_augroup('user-lsp-attach', { clear = true }),
         callback = function(event)
             local client = vim.lsp.get_client_by_id(event.data.client_id)
+            require('plugins.lsp.keymaps').setup(event)
             hl_on_cursor(event, client)
             enable_inlay_hints(event, client)
         end,
