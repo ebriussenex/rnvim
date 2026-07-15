@@ -8,13 +8,25 @@ local STATE_FILE = vim.fn.stdpath 'state' .. '/colorscheme_state.json'
 -- https://github.com/mellow-theme/mellow.nvim
 -- https://github.com/nyoom-engineering/oxocarbon.nvim
 -- https://github.com/cseelus/vim-colors-lucid
--- TODO: get those schemes and make all statements be bold >_<
--- NOTE: all schemes must be with cfg.tansparent field or have cfg_apply with apply(transparent) (vimrc style) to work properly
+
+---@class ColorschemeVariant
+---@field name string          -- exact string passed to `:colorscheme`
+---@field bg 'dark'|'light'     -- used to filter variants when transparency is on
+
+---@class ColorschemeEntry
+---@field src string                              -- "owner/repo" for vim.pack.add
+---@field name? string                            -- override pack directory name (needed when repo name != colorscheme name, e.g. moonfly)
+---@field module? string                          -- lua module name for require(module).setup(cfg); omit if cfg_apply is used instead
+---@field variants ColorschemeVariant[]            -- all `:colorscheme` targets this plugin provides
+---@field cfg? table                               -- opts table passed to require(module).setup(); merged with { transparent = state.transparent }
+---@field cfg_apply? fun(transparent: boolean)      -- alternative to cfg/module for vimscript-style themes using vim.g.* globals (e.g. moonfly)
+
+---@type ColorschemeEntry[]
 local schemes = {
     {
         src = 'bluz71/vim-moonfly-colors',
         name = 'moonfly',
-        variants = { 'moonfly' },
+        variants = { { name = 'moonfly', bg = 'dark' } },
         cfg_apply = function(transparent)
             vim.g.moonflyCursorColor = true
             vim.g.moonflyItalics = false
@@ -27,7 +39,7 @@ local schemes = {
     {
         src = 'killitar/obscure.nvim',
         module = 'obscure',
-        variants = { 'obscure' },
+        variants = { { name = 'obscure', bg = 'dark' } },
         cfg = {
             styles = {
                 booleans = {
@@ -47,14 +59,14 @@ local schemes = {
         src = 'wtfox/jellybeans.nvim',
         module = 'jellybeans',
         variants = {
-            'jellybeans',
-            'jellybeans-light',
-            'jellybeans-muted',
-            'jellybeans-muted-light',
-            'jellybeans-mono',
-            'jellybeans-mono-light',
-            'jellybeans-warm',
-            'jellybeans-hc',
+            { name = 'jellybeans', bg = 'dark' },
+            { name = 'jellybeans-muted', bg = 'dark' },
+            { name = 'jellybeans-mono', bg = 'dark' },
+            { name = 'jellybeans-warm', bg = 'dark' },
+            { name = 'jellybeans-hc', bg = 'dark' },
+            { name = 'jellybeans-muted-light', bg = 'light' },
+            { name = 'jellybeans-mono-light', bg = 'light' },
+            { name = 'jellybeans-light', bg = 'light' },
         },
         cfg = {
             italics = false,
@@ -66,7 +78,7 @@ local schemes = {
     {
         src = 'datsfilipe/vesper.nvim',
         module = 'vesper',
-        variants = { 'vesper' },
+        variants = { { name = 'vesper', bg = 'dark' } },
         cfg = {
             italics = {
                 comments = false,
@@ -80,7 +92,10 @@ local schemes = {
     {
         src = 'thesimonho/kanagawa-paper.nvim',
         module = 'kanagawa-paper',
-        variants = { 'kanagawa-paper-ink', 'kanagawa-paper-canvas' },
+        variants = {
+            { name = 'kanagawa-paper-ink', bg = 'dark' },
+            { name = 'kanagawa-paper-canvas', bg = 'light' },
+        },
         cfg = {
             cache = true,
             styles = {
@@ -124,6 +139,7 @@ local state = {
     bold = true,
 }
 
+---@return nil
 local function load_state()
     local ok, content = pcall(vim.fn.readfile, STATE_FILE)
     if ok then
@@ -132,10 +148,12 @@ local function load_state()
     end
 end
 
+---@return nil
 local function save_state()
     vim.fn.writefile({ vim.json.encode(state) }, STATE_FILE)
 end
 
+---@return nil
 local function force_transparent()
     if not state.transparent then
         return
@@ -149,6 +167,7 @@ local function force_transparent()
     end
 end
 
+---@return nil
 local function apply()
     local scheme = schemes[state.index]
     local variant = state.variant or scheme.variants[1]
@@ -162,6 +181,18 @@ local function apply()
 
     vim.cmd.colorscheme(variant)
     force_transparent()
+end
+
+---@param scheme table
+---@return table[]
+local function usable_variants(scheme)
+    if not state.transparent then
+        return scheme.variants
+    end
+    local dark = vim.tbl_filter(function(v)
+        return v.bg == 'dark'
+    end, scheme.variants)
+    return #dark > 0 and dark or scheme.variants
 end
 
 function M.setup()
@@ -181,6 +212,19 @@ function M.setup()
 
     map('n', '<leader>ut', function()
         state.transparent = not state.transparent
+        if state.transparent then
+            local scheme = schemes[state.index]
+            local current = state.variant or scheme.variants[1].name
+            local is_dark = vim.tbl_contains(
+                vim.tbl_map(function(v)
+                    return v.name
+                end, usable_variants(scheme)),
+                current
+            )
+            if not is_dark then
+                state.variant = usable_variants(scheme)[1].name
+            end
+        end
         apply()
         save_state()
     end, { desc = '[U]I toggle [t]ransparency' })
@@ -208,17 +252,27 @@ function M.setup()
         vim.notify('Variant: ' .. state.variant)
     end, { desc = '[U]I cycle [v]ariant' })
 
-    vim.keymap.set('n', '<leader>uC', function()
+    map('n', '<leader>uC', function()
         local pickers = require 'telescope.pickers'
         local finders = require 'telescope.finders'
         local conf = require('telescope.config').values
         local actions = require 'telescope.actions'
         local action_state = require 'telescope.actions.state'
 
+        local original = vim.deepcopy(state)
+
         local items = {}
         for i, scheme in ipairs(schemes) do
             for _, variant in ipairs(scheme.variants) do
-                table.insert(items, { index = i, variant = variant })
+                table.insert(items, { index = i, variant = variant.name })
+            end
+        end
+
+        local function preview()
+            local entry = action_state.get_selected_entry()
+            if entry then
+                state.index, state.variant = entry.value.index, entry.value.variant
+                apply()
             end
         end
 
@@ -233,14 +287,26 @@ function M.setup()
                 },
                 sorter = conf.generic_sorter {},
                 attach_mappings = function(prompt_bufnr)
+                    --- static analyzer dont understand dynamic telescope's `transform_mod` method adding
+                    ---@diagnostic disable-next-line: undefined-field
+                    actions.move_selection_next:enhance { post = preview }
+                    --- static analyzer dont understand dynamic telescope's `transform_mod` method adding
+                    ---@diagnostic disable-next-line: undefined-field
+                    actions.move_selection_previous:enhance { post = preview }
+
                     actions.select_default:replace(function()
-                        local selection = action_state.get_selected_entry()
-                        actions.close(prompt_bufnr)
-                        state.index = selection.value.index
-                        state.variant = selection.value.variant
-                        apply()
+                        preview()
                         save_state()
+                        actions.close(prompt_bufnr)
                     end)
+                    --- static analyzer dont understand dynamic telescope's `transform_mod` method adding
+                    ---@diagnostic disable-next-line: undefined-field
+                    actions.close:enhance {
+                        pre = function()
+                            state = original
+                            apply()
+                        end,
+                    }
                     return true
                 end,
             })
