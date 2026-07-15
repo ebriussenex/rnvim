@@ -43,9 +43,9 @@ snacks.notifier = {
         style = 'minimal',
     },
     keymaps = function()
-        map('n', '<leader>uh', function()
+        map('n', '<leader>un', function()
             require('snacks').notifier.show_history()
-        end, '[U]I notification [h]istory')
+        end, '[U]I [n]otification history')
     end,
 }
 

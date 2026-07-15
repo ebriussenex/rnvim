@@ -1,0 +1,12 @@
+---@class ColorschemeVariant
+---@field name string           -- exact string passed to `:colorscheme`
+---@field bg 'dark'|'light'     -- informational only, no longer used for filtering
+
+---@class ColorschemeEntry
+---@field src string                          -- "owner/repo" for vim.pack.add
+---@field name? string                        -- override pack directory name
+---@field module string                      -- lua module name for require(module).setup(cfg)
+---@field default? string                     -- variant name used as this scheme's default variant; falls back to variants[1]
+---@field variants ColorschemeVariant[]
+---@field cfg? table                           -- opts merged with { transparent = ... } and passed to setup()
+---@field cfg_apply? fun(transparent: boolean) -- alternative to module/cfg for vim.g.*-style themes

@@ -9,6 +9,10 @@
       "src": "https://github.com/saghen/blink.cmp",
       "version": "1.0.0 - 2.0.0"
     },
+    "busted": {
+      "rev": "5ed85d0e016a5eb5eca097aa52905eedf1b180f1",
+      "src": "https://github.com/LuaCATS/busted"
+    },
     "conform.nvim": {
       "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
       "src": "https://github.com/stevearc/conform.nvim"
@@ -40,6 +44,10 @@
     "lazydev.nvim": {
       "rev": "ff2cbcba459b637ec3fd165a2be59b7bbaeedf0d",
       "src": "https://github.com/folke/lazydev.nvim"
+    },
+    "luassert": {
+      "rev": "d3528bb679302cbfdedefabb37064515ab95f7b9",
+      "src": "https://github.com/LuaCATS/luassert"
     },
     "mason-lspconfig.nvim": {
       "rev": "47059d71b42d74b0a1e9f61c1d99d301039c3b5b",
