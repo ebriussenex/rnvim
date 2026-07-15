@@ -247,6 +247,81 @@ function M.setup()
             vim.notify('No usable variant in this scheme under current transparency', vim.log.levels.WARN)
         end
     end, { desc = '[U]I prev variant' })
+    vim.keymap.set('n', '<leader>uc', function()
+        local pickers = require 'telescope.pickers'
+        local finders = require 'telescope.finders'
+        local conf = require('telescope.config').values
+        local actions = require 'telescope.actions'
+        local action_state = require 'telescope.actions.state'
+
+        local original_variant = state.variant
+        local original_transparent = state.transparent
+
+        local items = state.transparent and logic.flatten_usable(schemes, true) or logic.flatten(schemes)
+
+        local confirmed = false
+
+        local function preview_apply()
+            local entry = action_state.get_selected_entry()
+            if entry then
+                state.variant = entry.value.variant.name
+                apply()
+            end
+        end
+
+        local previewers = require 'telescope.previewers'
+
+        local origin_buf = vim.api.nvim_get_current_buf()
+        local origin_ft = vim.bo[origin_buf].filetype
+        local origin_lines = vim.api.nvim_buf_get_lines(origin_buf, 0, -1, false)
+
+        pickers
+            .new({}, {
+                prompt_title = state.transparent and 'Colorschemes (dark only — transparency on)' or 'Colorschemes',
+                finder = finders.new_table {
+                    results = items,
+                    entry_maker = function(entry)
+                        local label = entry.variant.name .. (entry.variant.bg == 'light' and '  [light]' or '')
+                        return { value = entry, display = label, ordinal = entry.variant.name }
+                    end,
+                },
+                sorter = conf.generic_sorter {},
+                previewer = previewers.new_buffer_previewer {
+                    title = 'Preview',
+                    define_preview = function(self)
+                        vim.api.nvim_buf_set_lines(self.state.bufnr, 0, -1, false, origin_lines)
+                        vim.bo[self.state.bufnr].filetype = origin_ft
+                    end,
+                },
+                attach_mappings = function(prompt_bufnr)
+                    ---@diagnostic disable-next-line: undefined-field
+                    actions.move_selection_next:enhance { post = preview_apply }
+                    ---@diagnostic disable-next-line: undefined-field
+                    actions.move_selection_previous:enhance { post = preview_apply }
+
+                    actions.select_default:replace(function()
+                        preview_apply()
+                        confirmed = true
+                        save_state()
+                        actions.close(prompt_bufnr)
+                    end)
+
+                    ---@diagnostic disable-next-line: undefined-field
+                    actions.close:enhance {
+                        pre = function()
+                            if not confirmed then
+                                state.variant = original_variant
+                                state.transparent = original_transparent
+                                apply()
+                            end
+                        end,
+                    }
+
+                    return true
+                end,
+            })
+            :find()
+    end, { desc = '[U]I pick [c]olorscheme' })
 end
 
 return M
